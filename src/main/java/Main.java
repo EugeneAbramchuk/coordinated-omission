@@ -20,7 +20,9 @@ public class Main {
         List<Long> latencies = new ArrayList<>();
         System.out.println(LocalDateTime.now() + " Starting the load generation...");
         for (long timer = System.nanoTime() + TimeUnit.MINUTES.toNanos(1); timer > System.nanoTime(); ) {
-            latencies.add(loadMethod());
+            long start = System.nanoTime();
+            loadMethod();
+            latencies.add(System.nanoTime() - start);
             Thread.sleep(10);
 
         }
@@ -28,15 +30,12 @@ public class Main {
         return latencies;
     }
 
-    private static long loadMethod() throws InterruptedException {
-        long start = System.nanoTime();
+    private static void loadMethod() throws InterruptedException {
         int delay = ThreadLocalRandom.current().nextInt(1, 5);
         if (ThreadLocalRandom.current().nextFloat() > 0.99) {
             delay = 100;
         }
         Thread.sleep(delay);
-
-        return System.nanoTime() - start;
     }
 
     private static void analyzeData(List<Long> latencies) {
