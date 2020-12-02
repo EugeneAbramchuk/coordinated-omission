@@ -13,7 +13,7 @@ public class Main {
     private static List<Long> generateLoad() {
         List<Long> latencies = new ArrayList<>();
         for (int i = 0; i < 6000; i++) {
-            long latency = ThreadLocalRandom.current().nextInt(1, 5);
+            long latency = ThreadLocalRandom.current().nextInt(1, 6);
             if (ThreadLocalRandom.current().nextFloat() > 0.99) {
                 latency = 100;
             }
