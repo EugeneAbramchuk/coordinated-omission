@@ -1,41 +1,25 @@
 package main.java;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 public class Main {
 
     public static void main(String[] args) {
-        try {
-            List<Long> latencies = generateLoad();
-            analyzeData(latencies);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        List<Long> latencies = generateLoad();
+        analyzeData(latencies);
     }
 
-    private static List<Long> generateLoad() throws InterruptedException {
+    private static List<Long> generateLoad() {
         List<Long> latencies = new ArrayList<>();
-        System.out.println(LocalDateTime.now() + " Starting the load generation...");
-        for (long timer = System.nanoTime() + TimeUnit.MINUTES.toNanos(1); timer > System.nanoTime(); ) {
-            long start = System.nanoTime();
-            loadMethod();
-            latencies.add(System.nanoTime() - start);
-            Thread.sleep(10);
-
+        for (int i = 0; i < 6000; i++) {
+            long latency = ThreadLocalRandom.current().nextInt(1, 5);
+            if (ThreadLocalRandom.current().nextFloat() > 0.99) {
+                latency = 100;
+            }
+            latencies.add(latency * 1000000);
         }
-        System.out.println(LocalDateTime.now() + " Load generation finished.");
         return latencies;
-    }
-
-    private static void loadMethod() throws InterruptedException {
-        int delay = ThreadLocalRandom.current().nextInt(1, 5);
-        if (ThreadLocalRandom.current().nextFloat() > 0.99) {
-            delay = 100;
-        }
-        Thread.sleep(delay);
     }
 
     private static void analyzeData(List<Long> latencies) {
