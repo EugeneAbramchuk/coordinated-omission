@@ -12,12 +12,18 @@ public class Main {
 
     private static List<Long> generateLoad() {
         List<Long> latencies = new ArrayList<>();
+        int hiccupWindow = 0;
         for (int i = 0; i < 6000; i++) {
-            long latency = ThreadLocalRandom.current().nextInt(1, 6);
+            int latency = ThreadLocalRandom.current().nextInt(1, 6);
             if (ThreadLocalRandom.current().nextFloat() > 0.99) {
-                latency = 100;
+                hiccupWindow = 100; // server-side problem starts and will resolve itself in 100ms
             }
-            latencies.add(latency * 1000000);
+            if (hiccupWindow > 0) {
+                latencies.add((hiccupWindow - latency) * 1000000L);
+                hiccupWindow -= 10; // server-side delay is now 10ms shorter for the next request
+            } else {
+                latencies.add(latency * 1000000L);
+            }
         }
         return latencies;
     }
